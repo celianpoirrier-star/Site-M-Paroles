@@ -1,0 +1,388 @@
+---
+import { Image } from 'astro:assets';
+import bonCadeau from '../assets/bon-cadeau.png';
+import { reserver, site, tarifs } from '../data/content';
+
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+---
+
+<section class="section" id="reserver" aria-labelledby="reserver-title">
+  <div class="container">
+    <header class="res__head reveal">
+      <p class="eyebrow">{reserver.eyebrow}</p>
+      <h2 id="reserver-title">{reserver.title}</h2>
+    </header>
+
+    <div class="res__cards">
+      <article class="card card--book reveal">
+        <h3>{reserver.booking.title}</h3>
+        <p>{reserver.booking.text}</p>
+        <a href="#formulaire" class="btn btn--primary" data-request="reserver">{reserver.booking.cta}</a>
+      </article>
+
+      <article class="card card--gift reveal">
+        <div class="card__gift-text">
+          <h3>{reserver.gift.title}</h3>
+          {reserver.gift.text.map((p) => <p>{p}</p>)}
+          <a href="#formulaire" class="btn btn--straw" data-request="offrir">{reserver.gift.cta}</a>
+        </div>
+        <Image
+          src={bonCadeau}
+          alt="Aperçu du bon cadeau M'Paroles"
+          width={640}
+          class="card__gift-img"
+        />
+      </article>
+    </div>
+
+    <div class="res__form-wrap reveal" id="formulaire">
+      <div class="res__form-intro">
+        <h3>{reserver.form.title}</h3>
+        <p>{reserver.form.intro}</p>
+        <p class="res__phone">
+          Vous préférez appeler ?<br />
+          <a href={site.phoneHref}>{site.phone}</a>
+        </p>
+      </div>
+
+      <form class="form" action="https://api.web3forms.com/submit" method="POST"
+        data-form
+        data-success={reserver.form.success}
+        data-error={reserver.form.error}
+      >
+        <input type="hidden" name="access_key" value={accessKey} />
+        <input type="hidden" name="subject" value={`Nouvelle demande depuis le site ${site.name}`} />
+        <input type="hidden" name="from_name" value={`Site ${site.name}`} />
+        <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" />
+
+        <fieldset class="form__choice">
+          <legend>Je souhaite</legend>
+          <label>
+            <input type="radio" name="demande" value="Réserver une séance" data-choice="reserver" checked />
+            <span>Réserver une séance</span>
+          </label>
+          <label>
+            <input type="radio" name="demande" value="Offrir un bon cadeau" data-choice="offrir" />
+            <span>Offrir un bon cadeau</span>
+          </label>
+        </fieldset>
+
+        <div class="form__grid">
+          <label class="field">
+            <span>Nom et prénom *</span>
+            <input type="text" name="nom" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span>Email *</span>
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label class="field">
+            <span>Téléphone</span>
+            <input type="tel" name="telephone" autocomplete="tel" />
+          </label>
+          <label class="field">
+            <span>Prestation</span>
+            <select name="prestation" id="prestation">
+              {tarifs.prestations.map((p) => <option value={p.title}>{p.title} · {p.price} €</option>)}
+            </select>
+          </label>
+          <label class="field">
+            <span>Prénom de l'animal</span>
+            <input type="text" name="animal" />
+          </label>
+          <label class="field">
+            <span>Espèce</span>
+            <input type="text" name="espece" placeholder="Chien, chat, cheval, lapin…" />
+          </label>
+          <label class="field field--full" data-gift-only hidden>
+            <span>Pour qui est ce bon cadeau ?</span>
+            <input type="text" name="beneficiaire" />
+          </label>
+          <label class="field field--full">
+            <span>Votre message *</span>
+            <textarea name="message" rows="5" required placeholder="Ce qui vous amène, vos questions…"></textarea>
+          </label>
+        </div>
+
+        <div class="form__footer">
+          <button type="submit" class="btn btn--primary" data-submit>Envoyer ma demande</button>
+          <p class="form__status" role="status" aria-live="polite" data-status></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const giftOnly = form.querySelector<HTMLElement>('[data-gift-only]')!;
+    const choices = form.querySelectorAll<HTMLInputElement>('[data-choice]');
+
+    const setChoice = (choice: string) => {
+      choices.forEach((input) => (input.checked = input.dataset.choice === choice));
+      giftOnly.hidden = choice !== 'offrir';
+    };
+
+    choices.forEach((input) => input.addEventListener('change', () => setChoice(input.dataset.choice ?? '')));
+    document.querySelectorAll<HTMLAnchorElement>('[data-request]').forEach((link) => {
+      link.addEventListener('click', () => setChoice(link.dataset.request ?? ''));
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      submit.disabled = true;
+      status.className = 'form__status';
+      status.textContent = 'Envoi en cours…';
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message);
+
+        form.reset();
+        setChoice('reserver');
+        status.classList.add('is-success');
+        status.textContent = form.dataset.success ?? '';
+      } catch {
+        status.classList.add('is-error');
+        status.textContent = form.dataset.error ?? '';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .res__head {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 3rem;
+  }
+
+  .res__head .eyebrow {
+    justify-content: center;
+  }
+
+  .res__cards {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 1.5rem;
+  }
+
+  .card {
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+
+  .card p {
+    color: var(--ink-soft);
+  }
+
+  .card .btn {
+    margin-top: 0.5rem;
+  }
+
+  .card--book {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--mint);
+  }
+
+  .card--book p {
+    flex: 1;
+  }
+
+  .card--gift {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+    align-items: center;
+    background: var(--surface);
+    border: 1.5px solid rgb(201 138 61 / 0.35);
+  }
+
+  .card__gift-img {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 18px 30px -16px rgb(31 77 58 / 0.4);
+    transform: rotate(2.5deg);
+    transition: transform 0.4s ease;
+  }
+
+  .card--gift:hover .card__gift-img {
+    transform: rotate(0deg) scale(1.03);
+  }
+
+  .res__form-wrap {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-top: 4rem;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid rgb(31 77 58 / 0.08);
+    box-shadow: var(--shadow);
+    scroll-margin-top: 6rem;
+  }
+
+  .res__form-intro p {
+    color: var(--ink-soft);
+  }
+
+  .res__phone a {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .form__choice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    border: 0;
+  }
+
+  .form__choice legend {
+    width: 100%;
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .form__choice label {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .form__choice input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+  }
+
+  .form__choice span {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    border: 1.5px solid rgb(31 77 58 / 0.25);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--forest);
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .form__choice input:checked + span {
+    background: var(--forest);
+    border-color: var(--forest);
+    color: var(--paper);
+  }
+
+  .form__choice input:focus-visible + span {
+    outline: 3px solid var(--ochre);
+    outline-offset: 3px;
+  }
+
+  .form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.25rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .field[hidden] {
+    display: none;
+  }
+
+  .field--full {
+    grid-column: 1 / -1;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid rgb(31 77 58 / 0.18);
+    background: var(--paper);
+    font: inherit;
+    font-weight: 400;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .field textarea {
+    resize: vertical;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--forest);
+    box-shadow: 0 0 0 4px rgb(168 195 160 / 0.45);
+  }
+
+  .form__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .form__footer .btn[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .form__status {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .form__status.is-success {
+    color: var(--forest);
+  }
+
+  .form__status.is-error {
+    color: #a14a2a;
+  }
+
+  @media (max-width: 960px) {
+    .res__cards,
+    .res__form-wrap {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .card--gift,
+    .form__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

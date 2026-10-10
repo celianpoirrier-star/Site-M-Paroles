@@ -1,0 +1,123 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import Leaf from './Leaf.astro';
+import { quiSuisJe, site } from '../data/content';
+---
+
+<section class="section" id="qui-suis-je" aria-labelledby="qsj-title">
+  <div class="container qsj">
+    <div class="qsj__visual reveal">
+      <div class="qsj__arch">
+        <Image
+          src={logo}
+          alt={`Illustration ${site.name} : une femme à l'écoute d'un chien, d'un chat et d'un cheval`}
+          width={560}
+          class="qsj__photo"
+        />
+      </div>
+      <Leaf class="qsj__leaf" />
+      <dl class="qsj__facts">
+        {
+          quiSuisJe.facts.map((f) => (
+            <div class="fact">
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div class="qsj__text reveal">
+      <p class="eyebrow">{quiSuisJe.eyebrow}</p>
+      <h2 id="qsj-title">{quiSuisJe.title}</h2>
+      {quiSuisJe.paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .qsj {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: clamp(2.5rem, 7vw, 6rem);
+    align-items: center;
+  }
+
+  .qsj__visual {
+    position: relative;
+  }
+
+  .qsj__arch {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid rgb(201 138 61 / 0.3);
+    box-shadow: var(--shadow);
+  }
+
+  .qsj__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 10%;
+  }
+
+  .qsj__leaf {
+    position: absolute;
+    width: 5.5rem;
+    top: -1.5rem;
+    right: -1.5rem;
+    color: var(--sage);
+    transform: rotate(25deg);
+  }
+
+  .qsj__facts {
+    display: grid;
+    gap: 0.75rem;
+    margin: -3rem 1.25rem 0;
+    position: relative;
+  }
+
+  .fact {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 0.9rem 1.25rem;
+    border-radius: var(--radius-sm);
+    background: var(--forest);
+    color: var(--paper);
+    box-shadow: var(--shadow);
+  }
+
+  .fact:nth-child(2) {
+    margin-left: 2rem;
+    background: var(--straw);
+    color: var(--forest-deep);
+  }
+
+  .fact dt {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+
+  .fact dd {
+    margin: 0;
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 860px) {
+    .qsj {
+      grid-template-columns: 1fr;
+    }
+
+    .qsj__visual {
+      max-width: 24rem;
+    }
+  }
+</style>

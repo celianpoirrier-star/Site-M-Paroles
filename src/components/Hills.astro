@@ -1,0 +1,70 @@
+---
+type Tone = 'forest' | 'mint' | 'paper';
+
+interface Props {
+  from?: Tone;
+  to: Tone;
+}
+
+const { from, to } = Astro.props;
+
+function colorOf(t: Tone): string {
+  switch (t) {
+    case 'forest':
+      return 'var(--forest)';
+    case 'mint':
+      return 'var(--mint)';
+    case 'paper':
+      return 'var(--paper)';
+    default: {
+      const exhaustive: never = t;
+      throw new Error(`Unknown tone: ${exhaustive}`);
+    }
+  }
+}
+
+function layersFor(t: Tone): [string, string] {
+  switch (t) {
+    case 'forest':
+      return ['var(--sage)', '#5f8a6f'];
+    case 'mint':
+      return ['var(--straw-soft)', '#c7dbbf'];
+    case 'paper':
+      return ['var(--sage)', 'var(--straw-soft)'];
+    default: {
+      const exhaustive: never = t;
+      throw new Error(`Unknown tone: ${exhaustive}`);
+    }
+  }
+}
+
+const [back, middle] = layersFor(to);
+const background = from ? colorOf(from) : 'transparent';
+---
+
+<div class="hills" style={`background:${background}`} aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path
+      fill={back}
+      opacity="0.45"
+      d="M0 70 C 160 20, 320 20, 480 55 S 800 105, 980 60 S 1300 10, 1440 45 V120 H0 Z"></path>
+    <path
+      fill={middle}
+      opacity="0.7"
+      d="M0 90 C 200 50, 380 60, 560 85 S 900 115, 1100 80 S 1340 55, 1440 75 V120 H0 Z"></path>
+    <path fill={colorOf(to)} d="M0 105 C 240 80, 460 95, 720 100 S 1180 85, 1440 98 V120 H0 Z"></path>
+  </svg>
+</div>
+
+<style>
+  .hills {
+    position: relative;
+    line-height: 0;
+    margin-bottom: -1px;
+  }
+
+  .hills svg {
+    width: 100%;
+    height: clamp(48px, 7vw, 110px);
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import Hills from './Hills.astro';
+import { nav, site } from '../data/content';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <Hills to="forest" />
+  <div class="footer__body">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <Image src={logo} alt={`Logo ${site.name}`} width={96} height={96} class="footer__logo" />
+        <p class="footer__slogan">« {site.slogan} »</p>
+      </div>
+
+      <nav aria-label="Plan du site">
+        <p class="footer__title">Le site</p>
+        <ul class="footer__list">
+          {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          <li><a href="#reserver">Réserver / Offrir</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <p class="footer__title">Contact</p>
+        <ul class="footer__list">
+          <li>{site.owner}</li>
+          <li><a href={site.phoneHref}>{site.phone}</a></li>
+          <li>Basée dans l'{site.location}</li>
+          <li>Séances à distance, France et pays francophones</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer__bottom">
+      <p>© {year} {site.name} · {site.owner}</p>
+      <a href="#mentions-legales">Mentions légales</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    color: rgb(247 241 227 / 0.85);
+  }
+
+  .footer__body {
+    background: var(--forest);
+    padding-block: 3rem 1.5rem;
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .footer__logo {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+  }
+
+  .footer__slogan {
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--straw);
+    max-width: 18rem;
+  }
+
+  .footer__title {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.75rem;
+  }
+
+  .footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .footer a {
+    color: var(--paper);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(247 241 227 / 0.15);
+    font-size: 0.875rem;
+  }
+
+  .footer__bottom p {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

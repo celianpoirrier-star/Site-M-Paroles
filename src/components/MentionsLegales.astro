@@ -1,0 +1,67 @@
+---
+import { site } from '../data/content';
+---
+
+<section class="legal" id="mentions-legales" aria-labelledby="legal-title">
+  <div class="container">
+    <details>
+      <summary><h2 id="legal-title">Mentions légales</h2></summary>
+      <div class="legal__body">
+        <p>
+          <strong>Éditrice du site :</strong>
+          {site.owner}, {site.name}, {site.location}. SIRET : [à compléter]. Téléphone : {site.phone}.
+        </p>
+        <p><strong>Hébergement :</strong> [nom, adresse et téléphone de l'hébergeur à compléter].</p>
+        <p>
+          <strong>Données personnelles :</strong> les informations transmises via le formulaire de contact sont
+          utilisées uniquement pour répondre à votre demande et ne sont jamais cédées à des tiers. Vous pouvez
+          demander leur suppression à tout moment.
+        </p>
+        <p>
+          <strong>Avertissement :</strong> la communication animale ne remplace en aucun cas un avis vétérinaire, un
+          comportementaliste qualifié ou un éducateur.
+        </p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<style>
+  .legal {
+    padding-block: 0 3rem;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    font-size: 1.25rem;
+    color: var(--ochre);
+  }
+
+  details[open] summary::after {
+    content: '−';
+  }
+
+  summary h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .legal__body {
+    max-width: 48rem;
+    padding-top: 1rem;
+  }
+</style>

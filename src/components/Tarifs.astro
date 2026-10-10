@@ -1,0 +1,170 @@
+---
+import { tarifs } from '../data/content';
+---
+
+<section class="section section--forest" id="tarifs" aria-labelledby="tarifs-title">
+  <div class="container">
+    <header class="tarifs__head reveal">
+      <p class="eyebrow">{tarifs.eyebrow}</p>
+      <h2 id="tarifs-title">{tarifs.title}</h2>
+      <p class="lead">{tarifs.payment}</p>
+    </header>
+
+    <ul class="tarifs__grid">
+      {
+        tarifs.prestations.map((p, i) => (
+          <li class:list={['offer reveal', { 'offer--featured': i === 0 }]} style={`transition-delay:${i * 100}ms`}>
+            {i === 0 && <span class="offer__badge">Pour commencer</span>}
+            <h3>{p.title}</h3>
+            <p class="offer__price">
+              {p.price}
+              <span> €</span>
+            </p>
+            <p class="offer__text">{p.description}</p>
+            <a href="#formulaire" class="btn offer__cta" data-request="reserver" data-prestation={p.title}>
+              Choisir cette séance
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="tarifs__closing reveal">{tarifs.closing}</p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-prestation]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const select = document.querySelector<HTMLSelectElement>('#prestation');
+      if (select) select.value = link.dataset.prestation ?? '';
+    });
+  });
+</script>
+
+<style>
+  .tarifs__head {
+    max-width: 44rem;
+    margin-bottom: 3rem;
+  }
+
+  .tarifs__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-items: stretch;
+  }
+
+  .offer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2.25rem 1.75rem 1.75rem;
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0.75rem;
+    background: rgb(247 241 227 / 0.06);
+    border: 1px solid rgb(247 241 227 / 0.16);
+  }
+
+  .offer--featured {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: transparent;
+  }
+
+  .section--forest .offer--featured h3 {
+    color: var(--forest);
+  }
+
+  .offer__badge {
+    position: absolute;
+    top: -0.9rem;
+    left: 1.75rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    background: var(--straw);
+    color: var(--forest-deep);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .offer h3 {
+    font-size: 1.35rem;
+    min-height: 2.6em;
+    margin-bottom: 0.75rem;
+  }
+
+  .offer__price {
+    font-family: var(--font-title);
+    font-size: 3.25rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--straw);
+    margin-bottom: 1.25rem;
+  }
+
+  .offer--featured .offer__price {
+    color: var(--ochre-deep);
+  }
+
+  .offer__price span {
+    font-size: 0.5em;
+  }
+
+  .offer__text {
+    flex: 1;
+    font-size: 0.97rem;
+    color: rgb(247 241 227 / 0.8);
+  }
+
+  .offer--featured .offer__text {
+    color: var(--ink-soft);
+  }
+
+  .offer__cta {
+    margin-top: 1rem;
+    border-color: rgb(247 241 227 / 0.5);
+    color: var(--paper);
+  }
+
+  .offer__cta:hover {
+    background: var(--paper);
+    color: var(--forest);
+  }
+
+  .offer--featured .offer__cta {
+    background: var(--forest);
+    color: var(--paper);
+    border-color: var(--forest);
+  }
+
+  .offer--featured .offer__cta:hover {
+    background: var(--forest-deep);
+  }
+
+  .tarifs__closing {
+    max-width: 40rem;
+    margin: 3rem auto 0;
+    text-align: center;
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--straw-soft);
+  }
+
+  @media (max-width: 900px) {
+    .tarifs__grid {
+      grid-template-columns: 1fr;
+      max-width: 32rem;
+      gap: 2rem;
+    }
+
+    .offer h3 {
+      min-height: 0;
+    }
+  }
+</style>

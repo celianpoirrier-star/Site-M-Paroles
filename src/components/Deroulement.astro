@@ -1,0 +1,155 @@
+---
+import { deroulement } from '../data/content';
+---
+
+<section class="section" id="deroulement" aria-labelledby="deroulement-title">
+  <div class="container der">
+    <header class="der__head reveal">
+      <p class="eyebrow">{deroulement.eyebrow}</p>
+      <h2 id="deroulement-title">{deroulement.title}</h2>
+      <a href="#reserver" class="btn btn--primary">Réserver une séance</a>
+    </header>
+
+    <ol class="timeline">
+      {
+        deroulement.steps.map((step, i) => (
+          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">
+              {i + 1}
+            </span>
+            <div class="step__body">
+              <h3>
+                <span class="visually-hidden">Étape {i + 1} : </span>
+                {step.title}
+              </h3>
+              {step.duration && <p class="step__duration">{step.duration}</p>}
+              {step.paragraphs.map((p) => <p>{p}</p>)}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .der {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .der__head {
+    position: sticky;
+    top: 7rem;
+  }
+
+  .der__head .btn {
+    margin-top: 1rem;
+  }
+
+  .timeline {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 1.6rem;
+    top: 1rem;
+    bottom: 1rem;
+    border-left: 2px dashed var(--sage);
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.2rem 1fr;
+    gap: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .step:last-child {
+    padding-bottom: 0;
+  }
+
+  .step__num {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 58% 42% 50% 50% / 45% 55% 45% 55%;
+    background: var(--straw);
+    font-family: var(--font-title);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--forest);
+  }
+
+  .step:nth-child(even) .step__num {
+    background: var(--sage);
+  }
+
+  .step__body {
+    padding: 1.5rem 1.75rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid rgb(31 77 58 / 0.08);
+    box-shadow: var(--shadow);
+  }
+
+  .step__body h3 {
+    margin-bottom: 0.5rem;
+  }
+
+  .step__duration {
+    display: inline-block;
+    margin-bottom: 0.9rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 999px;
+    background: var(--mint);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--forest);
+  }
+
+  .step__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 860px) {
+    .der {
+      grid-template-columns: 1fr;
+    }
+
+    .der__head {
+      position: static;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .step {
+      grid-template-columns: 2.6rem 1fr;
+      gap: 0.9rem;
+    }
+
+    .step__num {
+      width: 2.6rem;
+      height: 2.6rem;
+      font-size: 1.15rem;
+    }
+
+    .timeline::before {
+      left: 1.3rem;
+    }
+
+    .step__body {
+      padding: 1.25rem;
+    }
+  }
+</style>
