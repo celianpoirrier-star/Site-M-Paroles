@@ -1,38 +1,82 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../assets/logo.png';
+import manon from '../assets/manon.jpg';
+import elephant from '../assets/elephant.jpg';
 import Leaf from './Leaf.astro';
 import { quiSuisJe, site } from '../data/content';
 ---
 
 <section class="section" id="qui-suis-je" aria-labelledby="qsj-title">
-  <div class="container qsj">
-    <div class="qsj__visual reveal">
-      <div class="qsj__arch">
-        <Image
-          src={logo}
-          alt={`Illustration ${site.name} : une femme à l'écoute d'un chien, d'un chat et d'un cheval`}
-          width={560}
-          class="qsj__photo"
-        />
+  <div class="container">
+    <div class="qsj">
+      <div class="qsj__visual reveal">
+        <div class="qsj__frame">
+          <div class="qsj__arch">
+            <Image
+              src={manon}
+              alt={`${site.owner}, accoudée à une rambarde en bois au bord d'une rivière, en forêt`}
+              widths={[420, 640, 860]}
+              sizes="(max-width: 860px) 24rem, 30rem"
+              class="qsj__photo"
+            />
+          </div>
+        </div>
+        <Leaf class="qsj__leaf" />
+        <dl class="qsj__facts">
+          {
+            quiSuisJe.facts.map((f) => (
+              <div class="fact">
+                <dt>{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
       </div>
-      <Leaf class="qsj__leaf" />
-      <dl class="qsj__facts">
-        {
-          quiSuisJe.facts.map((f) => (
-            <div class="fact">
-              <dt>{f.label}</dt>
-              <dd>{f.value}</dd>
-            </div>
-          ))
-        }
-      </dl>
+
+      <div class="qsj__text reveal">
+        <p class="eyebrow">{quiSuisJe.eyebrow}</p>
+        <h2 id="qsj-title">{quiSuisJe.title}</h2>
+        {quiSuisJe.intro.map((p) => <p>{p}</p>)}
+      </div>
     </div>
 
-    <div class="qsj__text reveal">
-      <p class="eyebrow">{quiSuisJe.eyebrow}</p>
-      <h2 id="qsj-title">{quiSuisJe.title}</h2>
-      {quiSuisJe.paragraphs.map((p) => <p>{p}</p>)}
+    <article class="rencontre reveal" aria-labelledby="rencontre-title">
+      <div class="rencontre__media">
+        <div class="rencontre__shape">
+          <Image
+            src={elephant}
+            alt="Gros plan en noir et blanc sur le regard d'un éléphant mâle"
+            widths={[560, 800, 1024]}
+            sizes="(max-width: 860px) 100vw, 32rem"
+            class="rencontre__img"
+          />
+        </div>
+        <Leaf class="rencontre__leaf" />
+      </div>
+
+      <div class="rencontre__story">
+        <p class="eyebrow" id="rencontre-title">{quiSuisJe.rencontre.eyebrow}</p>
+        <p class="rencontre__text">{quiSuisJe.rencontre.text}</p>
+        <ul class="rencontre__questions">
+          {quiSuisJe.rencontre.questions.map((q) => <li>{q}</li>)}
+        </ul>
+        <p class="rencontre__conclusion">{quiSuisJe.rencontre.conclusion}</p>
+      </div>
+    </article>
+
+    <div class="parcours">
+      {
+        quiSuisJe.parcours.map((item, i) => (
+          <div class="parcours__item reveal" style={`transition-delay:${i * 100}ms`}>
+            <h3>
+              <span class="parcours__dot" aria-hidden="true" />
+              {item.title}
+            </h3>
+            <p>{item.text}</p>
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -49,21 +93,42 @@ import { quiSuisJe, site } from '../data/content';
     position: relative;
   }
 
+  .qsj__frame {
+    position: relative;
+  }
+
+  .qsj__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translate(1rem, 1rem);
+    border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+    border: 1.5px solid var(--ochre);
+    opacity: 0.7;
+  }
+
   .qsj__arch {
     position: relative;
     aspect-ratio: 4 / 5;
     overflow: hidden;
     border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
-    background: var(--surface);
-    border: 1px solid rgb(201 138 61 / 0.3);
+    background: var(--mint);
     box-shadow: var(--shadow);
+  }
+
+  .qsj__arch::after {
+    content: '';
+    position: absolute;
+    inset: 55% 0 0;
+    background: linear-gradient(to top, rgb(22 58 43 / 0.45), transparent);
+    pointer-events: none;
   }
 
   .qsj__photo {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    padding: 10%;
+    object-fit: cover;
+    object-position: 68% 55%;
   }
 
   .qsj__leaf {
@@ -111,13 +176,161 @@ import { quiSuisJe, site } from '../data/content';
     line-height: 1.2;
   }
 
+  /* Rencontre */
+  .rencontre {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    margin-top: clamp(4rem, 9vw, 6.5rem);
+    padding: clamp(1.75rem, 4vw, 3.25rem);
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0.75rem;
+    background:
+      radial-gradient(30rem 20rem at 100% 0%, rgb(232 199 122 / 0.12), transparent 70%),
+      var(--forest);
+    color: rgb(247 241 227 / 0.88);
+    box-shadow: var(--shadow);
+  }
+
+  .rencontre__media {
+    position: relative;
+  }
+
+  .rencontre__shape {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 58% 42% 46% 54% / 52% 44% 56% 48%;
+    box-shadow: 0 0 0 2px var(--ochre), 0 24px 40px -20px rgb(0 0 0 / 0.5);
+  }
+
+  .rencontre__shape::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--straw), var(--ochre));
+    mix-blend-mode: soft-light;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .rencontre__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+  }
+
+  .rencontre__leaf {
+    position: absolute;
+    width: 4.5rem;
+    bottom: -1rem;
+    left: -1.25rem;
+    color: var(--sage);
+    transform: rotate(-30deg);
+  }
+
+  .rencontre .eyebrow {
+    color: var(--straw);
+  }
+
+  .rencontre__text {
+    font-size: 1.1rem;
+  }
+
+  .rencontre__questions {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rencontre__questions li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: clamp(1.4rem, 2.6vw, 2rem);
+    line-height: 1.25;
+    color: var(--straw);
+  }
+
+  .rencontre__questions li::before {
+    content: '';
+    flex: none;
+    width: 1.5rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ochre);
+    transform: translateY(-0.35em);
+  }
+
+  .rencontre__conclusion {
+    margin: 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(247 241 227 / 0.18);
+    font-weight: 600;
+    color: var(--paper);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .rencontre .rencontre__img {
+      transform: scale(1.04);
+      transition: transform 1.6s ease;
+    }
+
+    :global(.js) .rencontre.is-visible .rencontre__img {
+      transform: none;
+    }
+  }
+
+  /* Parcours */
+  .parcours {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .parcours h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .parcours__dot {
+    flex: none;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+    background: var(--straw);
+  }
+
+  .parcours__item:nth-child(2) .parcours__dot {
+    background: var(--sage);
+  }
+
+  .parcours p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
   @media (max-width: 860px) {
-    .qsj {
+    .qsj,
+    .rencontre,
+    .parcours {
       grid-template-columns: 1fr;
     }
 
     .qsj__visual {
       max-width: 24rem;
+    }
+
+    .rencontre__shape {
+      aspect-ratio: 4 / 3;
     }
   }
 </style>

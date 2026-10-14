@@ -196,12 +196,25 @@ export const tarifs = {
 export const quiSuisJe = {
   eyebrow: 'Qui suis-je ?',
   title: 'Je m’appelle Manon Pailhas',
-  paragraphs: [
+  intro: [
     'Depuis mon enfance, j’ai grandi dans un environnement où la découverte de la nature et le respect du vivant occupaient une place importante. Très tôt, j’ai développé une profonde curiosité pour le monde qui m’entoure, et plus particulièrement pour les animaux.',
     'C’est donc naturellement que je me suis orientée vers un BTS Gestion et Protection de la Nature, puis vers le métier de soigneur animalier, que j’exerce depuis 2015.',
-    'Une rencontre toute particulière avec un majestueux éléphant mâle m’a amenée à me questionner davantage sur notre manière d’interagir avec les animaux : comment mieux les comprendre ? Comment être davantage à leur écoute ? C’est ainsi que la Communication Animale s’est présentée à moi comme une évidence.',
-    'À travers l’ECAMT, j’ai eu la possibilité de suivre un cursus complet en trois temps (350h) : la découverte de la pratique, l’approfondissement de l’écoute de mes ressentis, puis l’exploration du lien humain-animal dans son entièreté.',
-    'Aujourd’hui, basée dans l’Aude, je propose des séances de communication animale à distance, partout en France et dans les pays francophones. Mon parcours de soigneur animalier, mon expérience auprès des animaux et mon cheminement personnel nourrissent ma façon d’aborder chaque séance, avec curiosité, humilité et respect.',
+  ],
+  rencontre: {
+    eyebrow: 'Une rencontre décisive',
+    text: 'Une rencontre toute particulière avec un majestueux éléphant mâle m’a amenée à me questionner davantage sur notre manière d’interagir avec les animaux :',
+    questions: ['Comment mieux les comprendre ?', 'Comment être davantage à leur écoute ?'],
+    conclusion: 'C’est ainsi que la Communication Animale s’est présentée à moi comme une évidence.',
+  },
+  parcours: [
+    {
+      title: 'Ma formation',
+      text: 'À travers l’ECAMT, j’ai eu la possibilité de suivre un cursus complet en trois temps (350h) : la découverte de la pratique, l’approfondissement de l’écoute de mes ressentis, puis l’exploration du lien humain-animal dans son entièreté.',
+    },
+    {
+      title: 'Aujourd’hui',
+      text: 'Basée dans l’Aude, je propose des séances de communication animale à distance, partout en France et dans les pays francophones. Mon parcours de soigneur animalier, mon expérience auprès des animaux et mon cheminement personnel nourrissent ma façon d’aborder chaque séance, avec curiosité, humilité et respect.',
+    },
   ],
   facts: [
     { value: '2015', label: 'Soigneur animalier depuis' },
