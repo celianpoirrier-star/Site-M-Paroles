@@ -5,6 +5,8 @@
   --forest-deep: #163a2b;
   --sage: #a8c3a0;
   --mint: #dce8d5;
+  --sage-soft: #cfe0c6;
+  --sand: #efe2c8;
   --ochre: #c98a3d;
   --ochre-deep: #9c6526;
   --straw: #e8c77a;
@@ -114,8 +116,12 @@ a {
   position: relative;
 }
 
-.section--mint {
-  background: var(--mint);
+.section--sage {
+  background: var(--sage-soft);
+}
+
+.section--sand {
+  background: var(--sand);
 }
 
 .section--forest {

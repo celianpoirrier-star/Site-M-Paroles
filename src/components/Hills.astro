@@ -1,5 +1,5 @@
 ---
-type Tone = 'forest' | 'mint' | 'paper';
+type Tone = 'forest' | 'sage' | 'sand' | 'paper';
 
 interface Props {
   from?: Tone;
@@ -12,8 +12,10 @@ function colorOf(t: Tone): string {
   switch (t) {
     case 'forest':
       return 'var(--forest)';
-    case 'mint':
-      return 'var(--mint)';
+    case 'sage':
+      return 'var(--sage-soft)';
+    case 'sand':
+      return 'var(--sand)';
     case 'paper':
       return 'var(--paper)';
     default: {
@@ -27,8 +29,10 @@ function layersFor(t: Tone): [string, string] {
   switch (t) {
     case 'forest':
       return ['var(--sage)', '#5f8a6f'];
-    case 'mint':
-      return ['var(--straw-soft)', '#c7dbbf'];
+    case 'sage':
+      return ['var(--straw-soft)', '#b9cfae'];
+    case 'sand':
+      return ['var(--sage)', '#e3cfa6'];
     case 'paper':
       return ['var(--sage)', 'var(--straw-soft)'];
     default: {

@@ -31,14 +31,14 @@ import { nav, site } from '../data/content';
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="nav__link">
+              <a href={item.href} class="nav__link" data-nav-link={item.href.slice(1)}>
                 {item.label}
               </a>
             </li>
           ))
         }
       </ul>
-      <a href="#reserver" class="btn btn--primary nav__cta">Réserver</a>
+      <a href="#reserver" class="btn btn--primary nav__cta" data-nav-link="reserver">Réserver</a>
     </nav>
   </div>
 </header>
@@ -64,6 +64,36 @@ import { nav, site } from '../data/content';
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 12);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    const links = Array.from(header.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'));
+    const setActive = (key: string | null) => {
+      links.forEach((link) => {
+        const active = link.dataset.navLink === key;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive((entry.target as HTMLElement).dataset.navSection ?? null);
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    document.querySelectorAll('[data-nav-section]').forEach((section) => sectionObserver.observe(section));
+
+    const hero = document.querySelector('#top');
+    if (hero) {
+      new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActive(null);
+        },
+        { rootMargin: '-45% 0px -50% 0px' },
+      ).observe(hero);
+    }
   }
 </script>
 
@@ -161,12 +191,21 @@ import { nav, site } from '../data/content';
     transition: transform 0.25s ease;
   }
 
-  .nav__link:hover::after {
+  .nav__link:hover::after,
+  .nav__link.is-active::after {
     transform: scaleX(1);
+  }
+
+  .nav__link.is-active {
+    color: var(--forest);
   }
 
   .nav__cta {
     padding: 0.7rem 1.35rem;
+  }
+
+  .nav__cta.is-active {
+    box-shadow: 0 0 0 4px rgb(201 138 61 / 0.45);
   }
 
   .menu-toggle {
@@ -241,6 +280,12 @@ import { nav, site } from '../data/content';
 
     .nav__link::after {
       display: none;
+    }
+
+    .nav__link.is-active {
+      font-weight: 800;
+      padding-left: 0.9rem;
+      box-shadow: inset 3px 0 0 var(--ochre);
     }
   }
 </style>
