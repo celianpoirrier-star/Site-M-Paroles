@@ -2,11 +2,13 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import { nav, site } from '../data/content';
+
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
 <header class="header" data-header>
   <div class="container header__inner">
-    <a href="#top" class="brand" aria-label={`${site.name}, retour en haut de page`}>
+    <a href="/" class="brand" aria-label={`${site.name}, retour à l'accueil`}>
       <Image src={logo} alt="" width={52} height={52} class="brand__logo" loading="eager" />
       <span class="brand__text">
         <span class="brand__name">{site.name}</span>
@@ -31,14 +33,24 @@ import { nav, site } from '../data/content';
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="nav__link" data-nav-link={item.href.slice(1)}>
+              <a
+                href={item.href}
+                class:list={['nav__link', { 'is-active': item.href === current }]}
+                aria-current={item.href === current ? 'page' : undefined}
+              >
                 {item.label}
               </a>
             </li>
           ))
         }
       </ul>
-      <a href="#reserver" class="btn btn--primary nav__cta" data-nav-link="reserver">Réserver</a>
+      <a
+        href="/reserver"
+        class:list={['btn btn--primary nav__cta', { 'is-active': current === '/reserver' }]}
+        aria-current={current === '/reserver' ? 'page' : undefined}
+      >
+        Réserver
+      </a>
     </nav>
   </div>
 </header>
@@ -64,36 +76,6 @@ import { nav, site } from '../data/content';
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 12);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-
-    const links = Array.from(header.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'));
-    const setActive = (key: string | null) => {
-      links.forEach((link) => {
-        const active = link.dataset.navLink === key;
-        link.classList.toggle('is-active', active);
-        if (active) link.setAttribute('aria-current', 'true');
-        else link.removeAttribute('aria-current');
-      });
-    };
-
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActive((entry.target as HTMLElement).dataset.navSection ?? null);
-        }
-      },
-      { rootMargin: '-45% 0px -50% 0px' },
-    );
-    document.querySelectorAll('[data-nav-section]').forEach((section) => sectionObserver.observe(section));
-
-    const hero = document.querySelector('#top');
-    if (hero) {
-      new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(null);
-        },
-        { rootMargin: '-45% 0px -50% 0px' },
-      ).observe(hero);
-    }
   }
 </script>
 

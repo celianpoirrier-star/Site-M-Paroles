@@ -6,7 +6,7 @@ import { reserver, site, tarifs } from '../data/content';
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 ---
 
-<section class="section" id="reserver" data-nav-section="reserver" aria-labelledby="reserver-title">
+<section class="section" id="reserver" aria-labelledby="reserver-title">
   <div class="container">
     <header class="res__head reveal">
       <p class="eyebrow">{reserver.eyebrow}</p>
@@ -83,7 +83,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
           <label class="field">
             <span>Prestation</span>
             <select name="prestation" id="prestation">
-              {tarifs.prestations.map((p) => <option value={p.title}>{p.title} · {p.price} €</option>)}
+              {tarifs.prestations.map((p) => <option value={p.title} data-id={p.id}>{p.title} · {p.price} €</option>)}
             </select>
           </label>
           <label class="field">
@@ -131,6 +131,10 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
     document.querySelectorAll<HTMLAnchorElement>('[data-request]').forEach((link) => {
       link.addEventListener('click', () => setChoice(link.dataset.request ?? ''));
     });
+
+    const prestationId = new URLSearchParams(window.location.search).get('prestation');
+    const prestation = form.querySelector<HTMLOptionElement>(`option[data-id="${prestationId}"]`);
+    if (prestation) prestation.selected = true;
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();

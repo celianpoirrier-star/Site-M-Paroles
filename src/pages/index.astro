@@ -5,12 +5,7 @@ import Hills from '../components/Hills.astro';
 import CommunicationAnimale from '../components/CommunicationAnimale.astro';
 import Fonctionnement from '../components/Fonctionnement.astro';
 import QuandConsulter from '../components/QuandConsulter.astro';
-import Deroulement from '../components/Deroulement.astro';
-import Tarifs from '../components/Tarifs.astro';
-import QuiSuisJe from '../components/QuiSuisJe.astro';
-import Engagement from '../components/Engagement.astro';
-import Reserver from '../components/Reserver.astro';
-import MentionsLegales from '../components/MentionsLegales.astro';
+import NextPage from '../components/NextPage.astro';
 ---
 
 <Base>
@@ -21,14 +16,5 @@ import MentionsLegales from '../components/MentionsLegales.astro';
   <Hills to="sand" />
   <QuandConsulter />
   <Hills from="sand" to="paper" />
-  <Deroulement />
-  <Hills to="forest" />
-  <Tarifs />
-  <Hills from="forest" to="paper" />
-  <QuiSuisJe />
-  <Hills to="sage" />
-  <Engagement />
-  <Hills from="sage" to="paper" />
-  <Reserver />
-  <MentionsLegales />
+  <NextPage href="/qui-suis-je" label="Découvrez qui je suis" />
 </Base>

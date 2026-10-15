@@ -1,7 +1,7 @@
 ---
 import Hills from './Hills.astro';
 import Leaf from './Leaf.astro';
-import SpeciesIcon from './SpeciesIcon.astro';
+import Empreinte from './Empreinte.astro';
 import { hero, site } from '../data/content';
 ---
 
@@ -15,146 +15,33 @@ import { hero, site } from '../data/content';
       <h1 id="hero-title">{hero.title}</h1>
       <p class="lead">{hero.text}</p>
       <div class="hero__actions">
-        <a href="#reserver" class="btn btn--primary">Réserver une séance</a>
-        <a href="#deroulement" class="btn btn--ghost">Comment ça se passe</a>
+        <a href="/reserver" class="btn btn--primary">Réserver une séance</a>
+        <a href="/deroulement-tarifs" class="btn btn--ghost">Comment ça se passe</a>
       </div>
     </div>
 
-    <figure class="chat" data-chat aria-label="Exemple de conversation entre un gardien et son animal">
-      <div class="chat__tabs" role="tablist" aria-label="Choisir un exemple">
+    <figure class="compagnons">
+      <figcaption class="compagnons__title">{hero.card.title}</figcaption>
+      <blockquote class="compagnons__quote">
+        <p>{hero.card.quote}</p>
+      </blockquote>
+      <ul class="compagnons__list">
         {
-          hero.conversations.map((c, i) => (
-            <button
-              type="button"
-              role="tab"
-              class="chat__tab"
-              id={`chat-tab-${i}`}
-              aria-controls={`chat-thread-${i}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              tabindex={i === 0 ? 0 : -1}
-              data-tab={i}
-            >
-              <SpeciesIcon species={c.species} class="chat__tab-icon" />
-              {c.animal}
-            </button>
+          hero.card.species.map((s, i) => (
+            <li class="compagnon reveal" style={`transition-delay:${i * 120}ms`}>
+              <span class="compagnon__print">
+                <Empreinte species={s.species} />
+              </span>
+              {s.label}
+            </li>
           ))
         }
-      </div>
-
-      {
-        hero.conversations.map((c, i) => (
-          <div
-            class="chat__thread"
-            id={`chat-thread-${i}`}
-            role="tabpanel"
-            aria-labelledby={`chat-tab-${i}`}
-            hidden={i !== 0}
-            data-thread={i}
-          >
-            <div class="chat__head">
-              <span class="chat__avatar">
-                <SpeciesIcon species={c.species} />
-              </span>
-              <span>
-                <span class="chat__name">{c.animal}</span>
-                <span class="chat__status">à l'écoute</span>
-              </span>
-            </div>
-            <ol class="chat__list">
-              {c.messages.map((m) => (
-                <li class:list={['msg', `msg--${m.from}`]} data-msg>
-                  <span class="msg__author">{m.from === 'gardien' ? 'Vous' : c.animal}</span>
-                  <span class="msg__bubble">{m.text}</span>
-                  {m.from === 'animal' && (
-                    <span class="msg__typing" aria-hidden="true">
-                      <span />
-                      <span />
-                      <span />
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))
-      }
-
-      <figcaption class="chat__caption">Exemple fictif, pour illustrer l'esprit d'un échange.</figcaption>
+      </ul>
     </figure>
   </div>
 
   <Hills to="sage" />
 </section>
-
-<script>
-  const chat = document.querySelector<HTMLElement>('[data-chat]');
-
-  if (chat) {
-    const tabs = Array.from(chat.querySelectorAll<HTMLButtonElement>('[data-tab]'));
-    const threads = Array.from(chat.querySelectorAll<HTMLElement>('[data-thread]'));
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    let current = 0;
-    let runId = 0;
-
-    const select = (index: number) => {
-      current = index;
-      tabs.forEach((tab, i) => {
-        const active = i === index;
-        tab.setAttribute('aria-selected', String(active));
-        tab.tabIndex = active ? 0 : -1;
-      });
-      threads.forEach((thread, i) => (thread.hidden = i !== index));
-    };
-
-    const play = async (index: number) => {
-      const id = ++runId;
-      select(index);
-      if (reducedMotion) return;
-
-      const messages = Array.from(threads[index].querySelectorAll<HTMLElement>('[data-msg]'));
-      messages.forEach((msg) => msg.classList.remove('is-shown', 'is-typing'));
-
-      for (const msg of messages) {
-        const isAnimal = msg.classList.contains('msg--animal');
-        await wait(isAnimal ? 500 : 900);
-        if (id !== runId) return;
-        if (isAnimal) {
-          msg.classList.add('is-typing');
-          await wait(1600);
-          if (id !== runId) return;
-          msg.classList.remove('is-typing');
-        }
-        msg.classList.add('is-shown');
-      }
-
-      await wait(6000);
-      if (id !== runId) return;
-      play((index + 1) % threads.length);
-    };
-
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => play(i));
-      tab.addEventListener('keydown', (event) => {
-        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
-        const next = (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-        tabs[next].focus();
-        play(next);
-      });
-    });
-
-    if (!reducedMotion) {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          play(0);
-        }
-      });
-      observer.observe(chat);
-    }
-  }
-</script>
 
 <style>
   .hero {
@@ -209,233 +96,82 @@ import { hero, site } from '../data/content';
     opacity: 0.25;
   }
 
-  /* Chat */
-  .chat {
+  /* Compagnons */
+  .compagnons {
     margin: 0;
-    padding: 1.25rem;
-    border-radius: var(--radius-lg);
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0.75rem;
     background: rgb(251 247 238 / 0.85);
     border: 1px solid rgb(201 138 61 / 0.25);
     box-shadow: var(--shadow);
     backdrop-filter: blur(6px);
+    text-align: center;
   }
 
-  .chat__tabs {
-    display: flex;
-    gap: 0.4rem;
-    padding: 0.3rem;
-    margin-bottom: 1rem;
-    border-radius: 999px;
-    background: var(--mint);
-  }
-
-  .chat__tab {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding: 0.55rem 0.75rem;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    font: inherit;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--forest);
-    cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
-  }
-
-  .chat__tab[aria-selected='true'] {
-    background: var(--surface);
-    box-shadow: 0 2px 8px -2px rgb(31 77 58 / 0.25);
-  }
-
-  .chat__tab-icon {
-    width: 1.1rem;
-    height: 1.1rem;
-  }
-
-  .chat__head {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0 0.25rem 1rem;
-    border-bottom: 1px dashed rgb(31 77 58 / 0.18);
-    margin-bottom: 1rem;
-  }
-
-  .chat__avatar {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 50%;
-    background: var(--straw);
-    color: var(--forest);
-  }
-
-  .chat__avatar svg {
-    width: 1.6rem;
-  }
-
-  .chat__name {
-    display: block;
-    font-family: var(--font-title);
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--forest);
-    line-height: 1.2;
-  }
-
-  .chat__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
+  .compagnons__title {
+    font-weight: 800;
     font-size: 0.8rem;
-    color: var(--ink-soft);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ochre-deep);
   }
 
-  .chat__status::before {
-    content: '';
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: #6fa77f;
-    box-shadow: 0 0 0 3px rgb(111 167 127 / 0.25);
+  .compagnons__quote {
+    margin: 1rem 0 2rem;
   }
 
-  .chat__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
+  .compagnons__quote p {
     margin: 0;
-    padding: 0;
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--forest);
+  }
+
+  .compagnons__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 1.5rem;
+    margin: 0;
+    padding: 1.5rem 0 0;
+    border-top: 1px dashed rgb(31 77 58 / 0.18);
     list-style: none;
   }
 
-  .msg {
-    position: relative;
+  .compagnon {
     display: flex;
     flex-direction: column;
-    max-width: 85%;
-  }
-
-  .msg--gardien {
-    align-self: flex-end;
-    align-items: flex-end;
-  }
-
-  .msg--animal {
-    align-self: flex-start;
-  }
-
-  .msg__author {
-    font-size: 0.75rem;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--ink-soft);
-    margin: 0 0.9rem 0.25rem;
   }
 
-  .msg__bubble {
-    padding: 0.8rem 1.1rem;
-    border-radius: 1.4rem;
-    line-height: 1.5;
-    font-size: 0.98rem;
-  }
-
-  .msg--gardien .msg__bubble {
-    background: var(--forest);
-    color: var(--paper);
-    border-bottom-right-radius: 0.4rem;
-  }
-
-  .msg--animal .msg__bubble {
-    background: var(--straw);
-    color: var(--forest-deep);
-    border-bottom-left-radius: 0.4rem;
-  }
-
-  .msg__typing {
-    position: absolute;
-    left: 0;
-    top: 1.45rem;
-    display: none;
-    gap: 0.3rem;
-    padding: 0.85rem 1rem;
-    border-radius: 1.4rem 1.4rem 1.4rem 0.4rem;
-    background: var(--straw);
-  }
-
-  .msg__typing span {
-    width: 0.45rem;
-    height: 0.45rem;
+  .compagnon__print {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
     border-radius: 50%;
-    background: var(--forest);
-    opacity: 0.4;
-    animation: typing 1.2s infinite ease-in-out;
+    background: var(--straw);
+    color: var(--forest);
+    transform: rotate(-12deg);
   }
 
-  .msg__typing span:nth-child(2) {
-    animation-delay: 0.15s;
+  .compagnon:nth-child(even) {
+    margin-top: 1.25rem;
   }
 
-  .msg__typing span:nth-child(3) {
-    animation-delay: 0.3s;
+  .compagnon:nth-child(even) .compagnon__print {
+    background: var(--mint);
+    transform: rotate(10deg);
   }
 
-  @keyframes typing {
-    0%,
-    60%,
-    100% {
-      transform: translateY(0);
-      opacity: 0.4;
-    }
-    30% {
-      transform: translateY(-4px);
-      opacity: 0.9;
-    }
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    :global(.js) .msg__author,
-    :global(.js) .msg__bubble {
-      opacity: 0;
-      transform: translateY(8px) scale(0.98);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-    }
-
-    .msg--gardien .msg__bubble {
-      transform-origin: bottom right;
-    }
-
-    .msg--animal .msg__bubble {
-      transform-origin: bottom left;
-    }
-
-    :global(.js) .msg.is-typing .msg__author {
-      opacity: 1;
-      transform: none;
-    }
-
-    .msg.is-typing .msg__typing {
-      display: inline-flex;
-    }
-
-    :global(.js) .msg.is-shown .msg__author,
-    :global(.js) .msg.is-shown .msg__bubble {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  .chat__caption {
-    margin-top: 1.1rem;
-    font-size: 0.8rem;
-    font-style: italic;
-    text-align: center;
-    color: var(--ink-soft);
+  .compagnon__print svg {
+    width: 1.8rem;
   }
 
   @media (max-width: 900px) {
@@ -443,24 +179,18 @@ import { hero, site } from '../data/content';
       grid-template-columns: 1fr;
     }
 
-    .chat {
+    .compagnons {
       max-width: 34rem;
     }
   }
 
   @media (max-width: 480px) {
-    .chat {
-      padding: 0.9rem;
+    .compagnons {
       border-radius: var(--radius);
     }
 
-    .chat__tab {
-      font-size: 0.82rem;
-      padding: 0.5rem;
-    }
-
-    .msg {
-      max-width: 92%;
+    .compagnon:nth-child(even) {
+      margin-top: 0;
     }
   }
 </style>

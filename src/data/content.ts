@@ -1,15 +1,4 @@
-export type Species = 'chien' | 'chat' | 'cheval';
-
-export interface Message {
-  from: 'gardien' | 'animal';
-  text: string;
-}
-
-export interface Conversation {
-  animal: string;
-  species: Species;
-  messages: Message[];
-}
+export type Species = 'chien' | 'chat' | 'cheval' | 'lapin' | 'oiseau';
 
 export interface Prestation {
   id: string;
@@ -31,47 +20,25 @@ export const site = {
 };
 
 export const nav = [
-  { href: '#communication-animale', label: 'La communication animale' },
-  { href: '#deroulement', label: 'Déroulement' },
-  { href: '#tarifs', label: 'Tarifs' },
-  { href: '#qui-suis-je', label: 'Qui suis-je' },
+  { href: '/', label: 'Accueil' },
+  { href: '/qui-suis-je', label: 'Qui suis-je' },
+  { href: '/deroulement-tarifs', label: 'Déroulement et tarifs' },
 ];
 
 export const hero = {
   title: 'Et si votre animal avait des choses à vous dire ?',
   text: "Des séances de communication animale à distance, dans l'écoute, la douceur et le respect de son rythme. Pour chiens, chats, chevaux et tous les compagnons qui partagent votre vie.",
-  conversations: [
-    {
-      animal: 'Filou',
-      species: 'chien',
-      messages: [
-        { from: 'gardien', text: "Depuis le déménagement, il ne quitte plus l'entrée." },
-        { from: 'animal', text: "Ici, tout est nouveau. Je surveille la porte en attendant que ça redevienne chez nous." },
-        { from: 'gardien', text: "Qu'est-ce qui t'aiderait ?" },
-        { from: 'animal', text: 'Mon vieux coussin, près de toi. Et nos balades du matin, comme avant.' },
-      ],
-    },
-    {
-      animal: 'Praline',
-      species: 'chat',
-      messages: [
-        { from: 'gardien', text: "Elle se cache depuis l'arrivée du bébé." },
-        { from: 'animal', text: "La maison a changé de bruits. J'ai besoin d'un endroit en hauteur, rien qu'à moi." },
-        { from: 'gardien', text: 'Tu nous en veux ?' },
-        { from: 'animal', text: "Non. J'aimerais juste un moment avec toi, le soir, quand tout est calme." },
-      ],
-    },
-    {
-      animal: 'Azur',
-      species: 'cheval',
-      messages: [
-        { from: 'gardien', text: 'Il refuse de monter dans le van.' },
-        { from: 'animal', text: "La dernière fois, j'ai eu peur. Le sol bougeait et je me sentais seul." },
-        { from: 'gardien', text: 'Comment te rassurer ?' },
-        { from: 'animal', text: 'Prends ton temps. Laisse-moi regarder, sentir… et reste près de moi.' },
-      ],
-    },
-  ] satisfies Conversation[],
+  card: {
+    title: 'Pour tous les compagnons',
+    quote: 'Chaque animal, quelle que soit son espèce, a sa propre manière de ressentir et de s’exprimer.',
+    species: [
+      { species: 'chien', label: 'Chien' },
+      { species: 'chat', label: 'Chat' },
+      { species: 'cheval', label: 'Cheval' },
+      { species: 'lapin', label: 'Lapin' },
+      { species: 'oiseau', label: 'Oiseau' },
+    ] satisfies { species: Species; label: string }[],
+  },
 };
 
 export const communication = {
@@ -79,7 +46,7 @@ export const communication = {
   title: 'Une autre façon de les écouter',
   paragraphs: [
     'Nos animaux communiquent chaque jour avec nous, à travers leurs comportements, leurs émotions, leur présence et leur sensibilité. Ils ont leur propre manière de nous transmettre ce qu’ils vivent et ce qu’ils ressentent.',
-    'La Communication Animale est une approche intuitive qui consiste à se mettre à l’écoute de l’animal, à accueillir ce qu’il souhaite exprimer et à tenter de mieux comprendre son vécu, ses besoins et ses émotions.',
+    'La Communication Animale est une approche intuitive qui consiste à se mettre à l’écoute de l’animal, à accueillir ce qu’il souhaite exprimer et à tenter de mieux comprendre son vécu et ses émotions.',
     'C’est un moment d’échange et d’écoute, qui peut permettre de porter un regard différent sur votre animal, de mieux comprendre certaines situations et de nourrir le lien qui vous unit.',
   ],
   highlight:
@@ -103,7 +70,7 @@ export const fonctionnement = {
   outro: [
     'La communication permet également de transmettre à l’animal les questions, les interrogations ou les messages de son gardien, afin d’ouvrir un espace d’échange et de chercher ensemble une meilleure compréhension de ce que votre animal souhaite exprimer.',
     'L’intention est avant tout de laisser une place à la parole de l’animal, dans le respect de son rythme, de son individualité et du lien unique qui l’unit à son humain.',
-    'Chaque communication est ainsi une rencontre particulière, accueillie avec écoute, bienveillance, respect et sans jugement.',
+    'Chaque communication est ainsi une rencontre particulière, accueillie avec bienveillance et sans jugement.',
   ],
 };
 
@@ -166,8 +133,6 @@ export const tarifs = {
   title: 'Trois façons de se rencontrer',
   payment:
     'Le règlement s’effectue par virement bancaire. Les coordonnées bancaires vous seront communiquées lors de la prise de rendez-vous.',
-  closing:
-    'Chaque communication est accueillie avec respect, douceur et bienveillance, dans le respect du lien unique qui vous unit à votre animal.',
   prestations: [
     {
       id: 'premiere',
@@ -228,7 +193,6 @@ export const engagement = {
   title: 'Un savoir-faire, mais aussi un savoir-être',
   paragraphs: [
     'Se positionner en tant que thérapeute auprès des humains et des animaux représente pour moi un véritable savoir-faire, mais aussi un savoir-être. Je m’engage à faire vivre au quotidien des valeurs qui me sont essentielles.',
-    'Chaque animal est unique, tout comme chaque relation qui nous unit à lui. Mon intention est donc d’accueillir chaque séance avec ouverture, sans jugement et dans le respect de ce qui est vécu.',
     'Mon objectif premier sera d’honorer ce que les animaux peuvent nous enseigner : apprendre à faire confiance à nos ressentis, à développer nos sens et à revenir pleinement à l’instant présent.',
   ],
   values: ['Respect', 'Bienveillance', 'Écoute', 'Authenticité', 'Partage', 'Entraide'],

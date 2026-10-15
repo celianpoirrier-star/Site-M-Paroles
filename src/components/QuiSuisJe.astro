@@ -6,7 +6,7 @@ import Leaf from './Leaf.astro';
 import { quiSuisJe, site } from '../data/content';
 ---
 
-<section class="section" id="qui-suis-je" data-nav-section="qui-suis-je" aria-labelledby="qsj-title">
+<section class="section" id="qui-suis-je" aria-labelledby="qsj-title">
   <div class="container">
     <div class="qsj">
       <div class="qsj__visual reveal">
@@ -198,7 +198,7 @@ import { quiSuisJe, site } from '../data/content';
 
   .rencontre__shape {
     position: relative;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     border-radius: 58% 42% 46% 54% / 52% 44% 56% 48%;
     box-shadow: 0 0 0 2px var(--ochre), 0 24px 40px -20px rgb(0 0 0 / 0.5);
@@ -218,7 +218,6 @@ import { quiSuisJe, site } from '../data/content';
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 45%;
   }
 
   .rencontre__leaf {
@@ -275,17 +274,6 @@ import { quiSuisJe, site } from '../data/content';
     color: var(--paper);
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    :global(.js) .rencontre .rencontre__img {
-      transform: scale(1.04);
-      transition: transform 1.6s ease;
-    }
-
-    :global(.js) .rencontre.is-visible .rencontre__img {
-      transform: none;
-    }
-  }
-
   /* Parcours */
   .parcours {
     display: grid;
@@ -327,10 +315,6 @@ import { quiSuisJe, site } from '../data/content';
 
     .qsj__visual {
       max-width: 24rem;
-    }
-
-    .rencontre__shape {
-      aspect-ratio: 4 / 3;
     }
   }
 </style>

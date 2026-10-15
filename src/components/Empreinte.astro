@@ -1,0 +1,36 @@
+---
+import type { Species } from '../data/content';
+
+interface Props {
+  species: Species;
+  class?: string;
+}
+
+const { species, class: className, ...rest } = Astro.props;
+
+const oval = (x: number, y: number, rx: number, ry = rx) =>
+  `M${x - rx} ${y}a${rx} ${ry} 0 1 0 ${rx * 2} 0a${rx} ${ry} 0 1 0 ${-rx * 2} 0Z`;
+
+function pathFor(s: Species): string {
+  switch (s) {
+    case 'chien':
+      return [oval(12, 16, 4.6, 3.9), oval(5.2, 10.4, 1.8, 2.2), oval(9, 6.4, 2, 2.4), oval(15, 6.4, 2, 2.4), oval(18.8, 10.4, 1.8, 2.2)].join('');
+    case 'chat':
+      return [oval(12, 16.2, 4, 3.4), oval(6, 10.6, 1.7), oval(9.6, 7, 1.8), oval(14.4, 7, 1.8), oval(18, 10.6, 1.7)].join('');
+    case 'cheval':
+      return 'M12 3C7.6 3 5 6.8 5 11.5c0 4 1.3 7.4 2.6 9.1.4.5 1 .5 1.4 0l.7-1c.3-.4.3-.9 0-1.3C8.7 16.6 8 14.3 8 11.8 8 8.6 9.7 6 12 6s4 2.6 4 5.8c0 2.5-.7 4.8-1.7 6.5-.3.4-.3.9 0 1.3l.7 1c.4.5 1 .5 1.4 0 1.3-1.7 2.6-5.1 2.6-9.1C19 6.8 16.4 3 12 3Z';
+    case 'lapin':
+      return [oval(12, 15, 3.2, 5.5), oval(7.6, 7.6, 1.3, 1.8), oval(10.4, 4.6, 1.3, 1.8), oval(13.6, 4.6, 1.3, 1.8), oval(16.4, 7.6, 1.3, 1.8)].join('');
+    case 'oiseau':
+      return 'M11 3h2v11h-2ZM11.2 14.6 4.3 8.4l1.4-1.4 6.9 6.2ZM12.8 14.6l6.9-6.2-1.4-1.4-6.9 6.2ZM11 14h2v7h-2Z';
+    default: {
+      const exhaustive: never = s;
+      throw new Error(`Unknown species: ${exhaustive}`);
+    }
+  }
+}
+---
+
+<svg class={className} viewBox="0 0 24 24" aria-hidden="true" {...rest}>
+  <path fill="currentColor" d={pathFor(species)}></path>
+</svg>

@@ -2,12 +2,11 @@
 import { tarifs } from '../data/content';
 ---
 
-<section class="section section--forest" id="tarifs" data-nav-section="tarifs" aria-labelledby="tarifs-title">
+<section class="section section--forest" id="tarifs" aria-labelledby="tarifs-title">
   <div class="container">
     <header class="tarifs__head reveal">
       <p class="eyebrow">{tarifs.eyebrow}</p>
       <h2 id="tarifs-title">{tarifs.title}</h2>
-      <p class="lead">{tarifs.payment}</p>
     </header>
 
     <ul class="tarifs__grid">
@@ -21,7 +20,7 @@ import { tarifs } from '../data/content';
               <span> €</span>
             </p>
             <p class="offer__text">{p.description}</p>
-            <a href="#formulaire" class="btn offer__cta" data-request="reserver" data-prestation={p.title}>
+            <a href={`/reserver?prestation=${p.id}#formulaire`} class="btn offer__cta">
               Choisir cette séance
             </a>
           </li>
@@ -29,18 +28,9 @@ import { tarifs } from '../data/content';
       }
     </ul>
 
-    <p class="tarifs__closing reveal">{tarifs.closing}</p>
+    <p class="tarifs__payment reveal">{tarifs.payment}</p>
   </div>
 </section>
-
-<script>
-  document.querySelectorAll<HTMLAnchorElement>('[data-prestation]').forEach((link) => {
-    link.addEventListener('click', () => {
-      const select = document.querySelector<HTMLSelectElement>('#prestation');
-      if (select) select.value = link.dataset.prestation ?? '';
-    });
-  });
-</script>
 
 <style>
   .tarifs__head {
@@ -146,7 +136,7 @@ import { tarifs } from '../data/content';
     background: var(--forest-deep);
   }
 
-  .tarifs__closing {
+  .tarifs__payment {
     max-width: 40rem;
     margin: 3rem auto 0;
     text-align: center;

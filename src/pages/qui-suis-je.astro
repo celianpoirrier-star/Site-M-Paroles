@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Hills from '../components/Hills.astro';
+import QuiSuisJe from '../components/QuiSuisJe.astro';
+import Engagement from '../components/Engagement.astro';
+import NextPage from '../components/NextPage.astro';
+import { site } from '../data/content';
+---
+
+<Base title={`Qui suis-je · ${site.name}`}>
+  <QuiSuisJe />
+  <Hills to="sage" />
+  <Engagement />
+  <Hills from="sage" to="paper" />
+  <NextPage href="/deroulement-tarifs" label="Découvrez le déroulement et les tarifs" />
+</Base>
